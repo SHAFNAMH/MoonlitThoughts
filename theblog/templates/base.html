@@ -1,0 +1,190 @@
+
+{% load static %}
+
+<html lang="en">
+  <head>
+    <title> {% block title %}
+            Moonlit Thoughts
+            {% endblock  %}
+    </title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link href="https://fonts.googleapis.com/css?family=Josefin+Sans:300, 400,700|Inconsolata:400,700" rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+    <link rel="stylesheet" href="{%  static 'css/animate.css' %}">
+    <link rel="stylesheet" href="{%  static 'css/owl.carousel.min.css' %}">
+
+    <link rel="stylesheet" href="{%  static 'fonts/ionicons/css/ionicons.min.css' %}">
+    <link rel="stylesheet" href="{%  static 'fonts/fontawesome/css/font-awesome.min.css' %}">
+    <link rel="stylesheet" href="{%  static 'fonts/flaticon/font/flaticon.css' %}">
+
+    <!-- Theme Style -->
+    <link rel="stylesheet" href="{%  static 'css/style.css' %}">
+  </head>
+
+
+  <body>
+    <div class="wrap">
+      <header role="banner">
+        <div class="container logo-wrap">
+          <div class="row pt-5">
+            <div class="col-12 text-center">
+              <a class="absolute-toggle d-block d-md-none" data-toggle="collapse" href="#navbarMenu" role="button" aria-expanded="false" aria-controls="navbarMenu"><span class="burger-lines"></span></a>
+              <h1 class="site-logo">Moonlit Thoughts</h1>
+            </div>
+          </div>
+        </div>
+        <nav class="navbar navbar-expand-md navbar-light navbar-bg">
+          <div class="container">
+            <div class="collapse navbar-collapse" id="navbarMenu">
+                <ul class="navbar-nav mx-auto">
+
+                     <li class="nav-item">
+                      <a class="nav-link" href="{% url 'home' %}">Home</a>
+                     </li>
+                     <li class="nav-item">
+                      <a class="nav-link" href="{% url 'register' %}">Register</a>
+                     </li>
+                     <li class="nav-item">
+                     <a class="nav-link" href="{% url 'login' %}">login</a>
+                     </li>
+                    {% if user.is_authenticated %}
+                        <li class="nav-item">
+                          <a class="nav-link" href="{% url 'add_post' %}">Add post</a>
+                        </li>
+                         <li class="nav-item">
+                          <a class="nav-link" href="{% url 'add_category' %}">Add Category</a>
+                        </li>
+                    {% endif %}
+
+                    {% if cat_menu %}
+                         <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                             data-bs-toggle="dropdown" aria-expanded="false">
+                             Categories
+                           </a>
+                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            {% for item in cat_menu %}
+                              {% if item %}
+                                <li><a class="dropdown-item" href="{% url 'category' item|slugify %}">{{ item }}</a></li>
+                              {% endif %}
+                            {% endfor %}
+                         </ul>
+                          </li>
+                     {% endif %}
+
+
+                        </div>
+                       </li>
+
+                      {% if user.is_authenticated %}
+                         <li class="nav-item dropdown">
+
+                                   {% if user.profile.profile_pic %}
+                                         <img src="{{ user.profile.profile_pic.url }}"width="60px" height="60px"  class = "rounded-5 rounded-top-5" >
+                                   {% else  %}
+                                        <img src="{% static 'static/theblog/image/profileimg0.png' %}"width="40" height="40"  class = "rounded-5 rounded-top-0" >
+
+                                   {% endif %}
+                              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+
+                                   {{ user.first_name }}{{ user.last_name }}
+                              </a>
+                              <ul class="dropdown-menu  dropdown-menu-end">
+                                  {% if user.profile.id  %}
+                                  <li><a class="dropdown-item" href="{% url 'edit_profile'%}">Edit Settings</a></li>
+                                  <li><a class="dropdown-item" href="{% url 'edit_profile_page' user.profile.id %}">Edit Profile Page</a></li>
+                                  <li><a class="dropdown-item" href="{% url 'user_profile' user.profile.id %}">Show Profile Page</a></li>
+                                  {% else %}
+                                    <li><a class="dropdown-item" href="{% url 'create_user_profile' user.id %}">Create Profile Page</a></li>
+                                  {% endif %}
+
+                                  <form method="POST" action="{% url 'logout' %}">
+                                      {% csrf_token %}
+                                      <button type="submit">Logout</button>
+                                  </form>
+                              </ul>
+                         </li>
+
+                      {% endif %}
+              </nav>
+
+          </header
+
+
+       {% block content %}
+
+       {% endblock %}
+      </div>
+    </div>
+
+
+
+
+    <footer class="site-footer">
+        <div class="container">
+          <div class="row mb-5">
+            <div class="col-md-4">
+              <h3>About Us</h3>
+              <p class="mb-4">
+                <img src="{% static 'images/footerimage.jpg' %}" alt="Image placeholder" class="img-fluid">
+              </p>
+
+              <p>Moonlit Blog is a peaceful corner of the internet where thoughts glow softly like the moon at night. Here, stories, ideas, and inspirations come together to create a calm space for readers who love simplicity, beauty, and meaningful moments. Whether it's lifestyle, creativity, or personal reflections, Moonlit Blog is all about capturing life’s gentle light—one post at a time.</p>
+            </div>
+
+                <div class="col-md-6 ml-auto">
+                  <div class="row">
+                    <div class="col-md-7">
+                      <div class="post-entry-sidebar">
+
+                       <ul>
+                          {% for post in object_list|slice:":5" %}
+                          <li>
+                            <a href="{% url 'article_detail' post.pk %}">
+                              {% if post.header_image %}
+                                <img src="{{ post.header_image.url }}" class="img-fluid" style="width:70px; height:auto; border-radius:5px;">
+                              {% endif %}
+                              <div class="text">
+                                <h4>{{ post.title }}</h4>
+                                <div class="post-meta">
+                                  <span class="mr-2">{{ post.post_date }} {{ post.snippet }}</span> &bullet;
+                                  <span class="ml-2"><span class="fa fa-comments"></span> 3</span>
+                                </div>
+                              </div>
+                            </a>
+                          </li>
+                          {% endfor %}
+                        </ul>
+
+
+                  </div>
+                </div>
+
+            </div>
+          </div>
+        </div>
+      </footer>
+</div>
+
+
+    <script src="{% static 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js' %}" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <!-- loader -->
+    <div id="loader" class="show fullscreen"><svg class="circular" width="48px" height="48px"><circle class="path-bg" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke="#eeeeee"/><circle class="path" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke-miterlimit="10" stroke="#f4b214"/></svg></div>
+
+    <script src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
+    <script src="{% static 'js/jquery-migrate-3.0.0.js' %}"></script>
+    <script src="{% static 'js/popper.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'js/jquery.waypoints.min.js' %}"></script>
+    <script src="{% static 'js/jquery.stellar.min.js' %}"></script>
+
+
+    <script src="{% static 'js/main.js' %}"></script>
+
+  </body>
+
+</html>

@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<!-- 🔥 SAME SLIDER AS HOME PAGE -->
+<section class="site-section pt-5 pb-5">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+
+        <div class="owl-carousel owl-theme home-slider">
+          <div>
+            <a href="#" class="a-block d-flex align-items-center height-lg"
+               style="background-image: url('{% static 'images/img_2.jpg' %}');">
+              <div class="text half-to-full">
+                <div class="post-meta">
+                  <span class="author mr-2">
+                    <img src="{% static 'images/img_1.jpg' %}" alt="">
+                    MoonlitThoughts
+                  </span> •
+                  <span class="mr-2">{% now "F d, Y" %}</span> •
+                  <span class="ml-2"><i class="fa fa-comments"></i> 3</span>
+                </div>
+                <h3>Category: {{ cats }}</h3>
+                <p>Explore posts related to {{ cats }}.</p>
+              </div>
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- 🔥 MAIN CONTENT AREA -->
+<section class="site-section py-sm">
+  <div class="container">
+    <div class="row">
+
+      <div class="col-md-6">
+        <h2 class="mb-4">Posts in {{ cats }}</h2>
+      </div>
+
+      <div class="col-md-6 text-right">
+        <form action="#" class="search-form">
+          <div class="form-group">
+            <span class="icon fa fa-search"></span>
+            <input type="text" class="form-control" placeholder="Type a keyword and hit enter">
+          </div>
+        </form>
+      </div>
+
+    </div>
+
+    <div class="row blog-entries">
+
+      <!-- LEFT SIDE — FILTERED POSTS -->
+      <div class="col-md-12 col-lg-8 main-content">
+        <div class="row">
+
+          {% if category_posts %}
+            {% for post in category_posts %}
+            <div class="col-md-6">
+              <a href="{% url 'article_detail' post.pk %}" class="blog-entry element-animate">
+
+                {% if post.header_image %}
+                <img src="{{ post.header_image.url }}" class="img-fluid">
+                {% endif %}
+
+                <div class="blog-content-body">
+                  <div class="post-meta">
+                    <span class="author mr-2">
+                      {% if post.author.profile.profile_pic %}
+                      <img src="{{ post.author.profile.profile_pic.url }}" width="40" height="40" class="rounded-circle">
+                      {% else %}
+                      <img src="{% static 'theblog/image/profileimg0.png' %}" width="40" height="40" class="rounded-circle">
+                      {% endif %}
+                    </span>
+                    • <span>{{ post.post_date }}</span>
+                    • <span class="ml-2"><i class="fa fa-comments"></i> 3</span>
+                  </div>
+
+                  <h2>{{ post.title }}</h2>
+                </div>
+
+              </a>
+            </div>
+            {% endfor %}
+          {% else %}
+            <p>No posts in this category yet.</p>
+          {% endif %}
+
+        </div>
+      </div>
+
+
+      <!-- 🔥 RIGHT SIDE — SAME AS HOME PAGE -->
+      <div class="col-md-12 col-lg-4 sidebar">
+
+        <div class="sidebar-box">
+          <div class="bio text-center">
+            <img src="{% static 'images/profileimg1.png' %}" class="img-fluid">
+            <div class="bio-body">
+              <h2>SHAFNA</h2>
+              <p>🌸My days unfold in small silences and soft discoveries...</p>
+
+              <p class="social">
+                <a href="#" class="p-2"><span class="fa fa-facebook"></span></a>
+                <a href="#" class="p-2"><span class="fa fa-twitter"></span></a>
+                <a href="#" class="p-2"><span class="fa fa-instagram"></span></a>
+                <a href="#" class="p-2"><span class="fa fa-youtube-play"></span></a>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="sidebar-box">
+          <h3 class="heading">Categories</h3>
+          <ul class="categories">
+            {% for item in cat_menu %}
+            <li><a href="{% url 'category' item %}">{{ item }}</a></li>
+            {% endfor %}
+          </ul>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</section>
+
+{% endblock %}
